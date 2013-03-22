@@ -1,7 +1,22 @@
-java -jar scripts/compiler.jar --js notify.js --js_output_file notify.min.js
+COMPILER=scripts/compiler.jar
+SOURCE=notify.js
+MINIFY=notify.min.js
+LICENSE=license.txt
+TEMP=temp.txt
 
-cat license.txt >> temp.txt
-cat notify.min.js >> temp.txt
-cat temp.txt > notify.min.js
+if [ ! -f $COMPILER ]
+then
+    echo Downloading Closure Compiler
+    wget http://closure-compiler.googlecode.com/files/compiler-latest.zip
+    unzip compiler-latest.zip $COMPILER -d scripts/
+    rm compiler-latest.zip
+fi
 
-rm temp.txt
+echo Compiling and Minifying with Closure Compiler
+java -jar $COMPILER --js $SOURCE --js_output_file $MINIFY
+
+cat $LICENSE >> $TEMP
+cat $MINIFY >> $TEMP
+cat $TEMP > $MINIFY
+
+rm $TEMP
