@@ -70,6 +70,9 @@
 		return [];
 	};
 	
+    TopicStack.prototype.set = function(topicName, stack) {
+        this.stack[topicName] = stack;
+    }
 	/**
 	 * @description Facade for TopicStack.prototype.add
 	 * @param {String} topic ie 'foo' || 'foo.var'
@@ -99,6 +102,24 @@
 			}
 		}
 	}
+    /**
+     * @description Unbind topics
+     * @param {String} topic ie 'foo' || 'foo.var'
+     * @returns {void}
+     */
+    function unbind(topic) {
+        var topicData = _getTopicName(topic);
+		var stack = topicStack.get(topicData.name);
+		if (stack.length) {
+            var _stack = [];
+			for (var i = 0; i < stack.length; i++) {
+				if (!(topicData.namespace === "" || topicData.namespace === stack[i].namespace)) {
+					_stack.push(stack[i]);
+				}
+			}
+            topicStack.set(topicData.name, _stack);
+		}
+    }
 	/**
 	 * @description Create a singleton of TopicStack
 	 */
@@ -109,6 +130,7 @@
 	 */
 	window.notify = {
 		bind: bind,
-		trigger: trigger
+		trigger: trigger,
+        unbind: unbind
 	};
 }());
