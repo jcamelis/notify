@@ -22,3 +22,16 @@ var data = {
 
 notify.trigger('waitingStart', data);
 ```
+
+unbind('topic');
+```javascript
+bind('waitingStart', function() {
+	//your code
+});
+
+bind('waitingStart.mynamespace', function() {
+	//your code
+});
+
+notify.unbind('waitingStart', data);
+```
