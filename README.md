@@ -8,7 +8,7 @@ Methods:
 
 bind('topic', callback);
 ```javascript
-bind('waitingStart', function() {
+notify.bind('waitingStart', function() {
 	//your code
 });
 ```
@@ -25,11 +25,11 @@ notify.trigger('waitingStart', data);
 
 unbind('topic');
 ```javascript
-bind('waitingStart', function() {
+notify.bind('waitingStart', function() {
 	//your code
 });
 
-bind('waitingStart.mynamespace', function() {
+notify.bind('waitingStart.mynamespace', function() {
 	//your code
 });
 
