@@ -6,6 +6,15 @@
 	 */
 	var topicStack;
 	/**
+	 * @private function 
+	 * @param {String} topicNamspace
+	 * @param {String} stackNamespace
+	 * @returns {boolean}
+	 */	
+	function _matchOrNullNamespace(topicNamspace, stackNamespace) {
+		return topicNamspace === "" || topicNamspace === stackNamespace;
+	}
+	/**
 	 * @param {String} name
 	 * @param {String} namespace
 	 * @param {Function} callback
@@ -50,8 +59,8 @@
 	 * @param {Function} callback
 	 * @returns {void}
 	 */
-	TopicStack.prototype.add = function(topic, callback) {
-		var _topic = TopicFactory(topic, callback);
+	TopicStack.prototype.add = function (topic, callback) {
+		var _topic = new TopicFactory(topic, callback);
 		if (!this.stack[_topic.name]) {
 			this.stack[_topic.name] = [];
 		}
@@ -69,10 +78,10 @@
 		}
 		return [];
 	};
-	
+
     TopicStack.prototype.set = function(topicName, stack) {
         this.stack[topicName] = stack;
-    }
+    };
 	/**
 	 * @description Facade for TopicStack.prototype.add
 	 * @param {String} topic ie 'foo' || 'foo.var'
@@ -80,9 +89,13 @@
 	 * @returns {void}
 	 */
 	function bind(topic, callback) {
-		topicStack.add(topic, callback);
+		if (typeof topic === "string" || typeof callback === "function") {
+			topicStack.add(topic, callback);
+		} else {
+			//@todo trow exception.
+		}
 	}
-	
+
 	/**
 	 * @description Will call all callback function for topics that match
 	 * @param {String} topic ie 'foo' || 'foo.var'
@@ -92,12 +105,11 @@
 	function trigger(topic, data) {
 		var topicData = _getTopicName(topic);
 		var stack = topicStack.get(topicData.name);
-		if (stack.length) {
-			for (var i = 0; i < stack.length; i++) {
-				if (topicData.namespace === "" || topicData.namespace === stack[i].namespace) {
-					if (typeof stack[i].callback === "function") {
-						stack[i].callback.call(null, data);
-					}
+		if (stack) {
+			var i;
+			for (i = 0; i < stack.length; i++) {
+				if (_matchOrNullNamespace(topicData.namespace, stack[i].namespace)) {
+					stack[i].callback.call(null, data);
 				}
 			}
 		}
@@ -110,10 +122,11 @@
     function unbind(topic) {
         var topicData = _getTopicName(topic);
 		var stack = topicStack.get(topicData.name);
-		if (stack.length) {
+		if (stack) {
             var _stack = [];
-			for (var i = 0; i < stack.length; i++) {
-				if (!(topicData.namespace === "" || topicData.namespace === stack[i].namespace)) {
+			var i;
+			for (i = 0; i < stack.length; i++) {
+				if (!_matchOrNullNamespace(topicData.namespace, stack[i].namespace)) {
 					_stack.push(stack[i]);
 				}
 			}
@@ -124,7 +137,7 @@
 	 * @description Create a singleton of TopicStack
 	 */
 	topicStack = new TopicStack();
-	
+
 	/**
 	 * @description Return a Facade of the public method.
 	 */
