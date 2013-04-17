@@ -15,6 +15,22 @@
 		return topicNamspace === "" || topicNamspace === stackNamespace;
 	}
 	/**
+	 * @description List of error messages.
+	 * @type JSON
+	 */
+	var errors = {
+		DEFAULT_PARAMETERS: "Wrong parameters. Topic as String and Callback as Function are expected.",
+		TOPIC_STRING_EXPECTED: "Wrong 'topic' parameter, String expected."
+	};
+	/**
+	 * @description show an error message in console.
+	 * @param {String} message
+	 * @returns {void}
+	 */
+	function error(message) {
+		return window.console && window.console.error && window.console.error(message);
+	}
+	/**
 	 * @param {String} name
 	 * @param {String} namespace
 	 * @param {Function} callback
@@ -92,7 +108,7 @@
 		if (typeof topic === "string" || typeof callback === "function") {
 			topicStack.add(topic, callback);
 		} else {
-			//@todo trow exception.
+			error(errors.DEFAULT_PARAMETERS);
 		}
 	}
 
@@ -120,6 +136,9 @@
      * @returns {void}
      */
     function unbind(topic) {
+		if (typeof topic !== "string") {
+			return error(errors.TOPIC_STRING_EXPECTED);
+		}
         var topicData = _getTopicName(topic);
 		var stack = topicStack.get(topicData.name);
 		if (stack) {
