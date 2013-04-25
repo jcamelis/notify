@@ -1,5 +1,5 @@
 /**
 * @autor jcamelis at gmail.com
 * @github https://github.com/jcamelis/notify
-* @website http://jquerylab.com.ar	
+* @website http://jquerylab.com.ar
 */

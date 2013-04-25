@@ -13,7 +13,7 @@ then
 fi
 
 echo Compiling and Minifying with Closure Compiler
-java -jar $COMPILER --js $SOURCE --js_output_file $MINIFY
+java -jar $COMPILER --compilation_level ADVANCED_OPTIMIZATIONS --js $SOURCE --js_output_file $MINIFY
 
 cat $LICENSE >> $TEMP
 cat $MINIFY >> $TEMP

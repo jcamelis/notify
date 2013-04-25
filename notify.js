@@ -1,5 +1,13 @@
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @output_file_name notify.min.js
+// ==/ClosureCompiler==
 
-(function(){
+(function (console) {
+
+	function isString(object) {
+		return typeof object === "string";
+	}
 	/**
 	 * @description Will save a unique instance of TopicStack;
 	 * @type {TopicStack}
@@ -28,7 +36,7 @@
 	 * @returns {void}
 	 */
 	function error(message) {
-		return window.console && window.console.error && window.console.error(message);
+		return console && console.error && console.error(message);
 	}
 	/**
 	 * @param {String} name
@@ -87,7 +95,7 @@
 	 * @param {String} topic ie 'foo' || 'foo.var'
 	 * @returns {Topic || Array}
 	 */
-	TopicStack.prototype.get = function(topic) {
+	TopicStack.prototype.get = function (topic) {
 		var topicData = _getTopicName(topic);
 		if (this.stack[topicData.name]) {
 			return this.stack[topicData.name];
@@ -95,7 +103,7 @@
 		return [];
 	};
 
-    TopicStack.prototype.set = function(topicName, stack) {
+    TopicStack.prototype.set = function (topicName, stack) {
         this.stack[topicName] = stack;
     };
 	/**
@@ -105,7 +113,7 @@
 	 * @returns {void}
 	 */
 	function bind(topic, callback) {
-		if (typeof topic === "string" || typeof callback === "function") {
+		if (isString(topic) || typeof callback === "function") {
 			topicStack.add(topic, callback);
 		} else {
 			error(errors.DEFAULT_PARAMETERS);
@@ -136,7 +144,7 @@
      * @returns {void}
      */
     function unbind(topic) {
-		if (typeof topic !== "string") {
+		if (!isString(topic)) {
 			return error(errors.TOPIC_STRING_EXPECTED);
 		}
         var topicData = _getTopicName(topic);
@@ -160,9 +168,9 @@
 	/**
 	 * @description Return a Facade of the public method.
 	 */
-	window.notify = {
-		bind: bind,
-		trigger: trigger,
-        unbind: unbind
+	window["notify"] = {
+		"bind": bind,
+		"trigger": trigger,
+        "unbind": unbind
 	};
-}());
+}(window.console));
